@@ -17,7 +17,7 @@ namespace OdeToPokemon.Pages.Pokemons
 
         [BindProperty]
         public Pokemon Pokemon { get; set; }
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public string PokemonPreviousId { get; set; }
         [BindProperty(SupportsGet = true)]
         public string PokemonNextId { get; set; }
@@ -36,6 +36,7 @@ namespace OdeToPokemon.Pages.Pokemons
             Pokemon = pokemonData.GetPokemonById(pokemonId);
             PokemonPreviousId = Pokemon.PreviousEvolution.Id.ToString();
             PokemonNextId = Pokemon.NextEvolution.Id.ToString();
+            
 
 
             PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>();
@@ -46,7 +47,7 @@ namespace OdeToPokemon.Pages.Pokemons
                                  {   Value = a.Id.ToString(),
                                      Text = a.Id + " - " + a.Name
                                  }).ToList();
-
+            
 
             PokemonsListNext = AllPokemonsList.Select(a =>
                                new SelectListItem
@@ -73,30 +74,38 @@ namespace OdeToPokemon.Pages.Pokemons
             Pokemon.PreviousEvolution = pokemonData.GetPokemonById(Int32.Parse(PokemonPreviousId));
             Pokemon.NextEvolution = pokemonData.GetPokemonById(Int32.Parse(PokemonNextId));
 
-            Pokemon = pokemonData.Update(Pokemon);
-            pokemonData.Commit();
+            if (ModelState.IsValid) { 
 
-            PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>();
-            IEnumerable<Pokemon> AllPokemonsList = pokemonData.GetPokemonsByName("");
+                pokemonData.Update(Pokemon);
+                pokemonData.Commit();
 
-            PokemonsListPrevious = AllPokemonsList.Select(a =>
-                                 new SelectListItem
-                                 {
-                                     Value = a.Id.ToString(),
-                                     Text = a.Id + " - " + a.Name
-                                 }).ToList();
+                return RedirectToPage("./List");
 
-            PokemonsListNext = AllPokemonsList.Select(a =>
-                               new SelectListItem
-                               {
-                                   Value = a.Id.ToString(),
-                                   Text = a.Id + " - " + a.Name
-                               }).ToList();
-            
+            } else
+            {
+                PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>();
+                IEnumerable<Pokemon> AllPokemonsList = pokemonData.GetPokemonsByName("");
+
+                PokemonsListPrevious = AllPokemonsList.Select(a =>
+                                     new SelectListItem
+                                     {
+                                         Value = a.Id.ToString(),
+                                         Text = a.Id + " - " + a.Name
+                                     }).ToList();
+
+                PokemonsListNext = AllPokemonsList.Select(a =>
+                                   new SelectListItem
+                                   {
+                                       Value = a.Id.ToString(),
+                                       Text = a.Id + " - " + a.Name
+                                   }).ToList();
+                return Page();
+            }
 
 
-            //return RedirectToPage("./List");
-            return Page();
+
+
+           
         }
     }
 }
