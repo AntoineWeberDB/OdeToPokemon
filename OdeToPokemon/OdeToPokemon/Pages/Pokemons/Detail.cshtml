@@ -1,0 +1,23 @@
+﻿@page "/{pokemonId:int}"
+
+@model OdeToPokemon.Pages.Pokemons.DetailModel
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<h2>@Model.Pokemon.Name</h2>
+
+<div>
+    PokedexID = @Model.Pokemon.Id
+</div>
+<div>
+    Type = @Model.Pokemon.Type
+</div>
+<div>
+    Previous Evolution =  @Model.PreviousEvolution
+</div>
+<div>
+    Next Evolution = @Model.NextEvolution
+</div>
+
+<a asp-page="./List" class="btn btn-default"> All Pokemons</a>
