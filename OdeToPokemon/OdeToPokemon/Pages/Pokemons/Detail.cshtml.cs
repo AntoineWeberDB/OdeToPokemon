@@ -13,9 +13,14 @@ namespace OdeToPokemon.Pages.Pokemons
     {
         public Pokemon Pokemon { get; set; }
 
-        public void OnGet(int PokemonId,InMemoryPokemonData pokemonData)
+        public IActionResult OnGet(int PokemonId,InMemoryPokemonData pokemonData)
         {
             Pokemon = pokemonData.GetPokemonById(PokemonId);
+            if(Pokemon == null)
+            {
+                return RedirectToPage("./NotFound");
+            }
+            return Page();
         }
     }
 }
