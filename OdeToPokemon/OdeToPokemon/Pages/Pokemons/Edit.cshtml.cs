@@ -9,23 +9,26 @@ using OdeToPokemon.Data;
 
 namespace OdeToPokemon.Pages.Pokemons
 {
-    public class DetailModel : PageModel
+    public class EditModel : PageModel
     {
-        public Pokemon Pokemon { get; set; }
         private readonly IPokemonData pokemonData;
 
-        public DetailModel(IPokemonData pokemonData)
+        public Pokemon Pokemon { get; set; }
+
+        public EditModel(IPokemonData pokemonData)
         {
             this.pokemonData = pokemonData;
         }
 
-        public IActionResult OnGet(int PokemonId)
+        public IActionResult OnGet(int pokemonId)
         {
-            Pokemon = pokemonData.GetPokemonById(PokemonId);
-            if(Pokemon == null)
+            Pokemon = pokemonData.GetPokemonById(pokemonId);
+
+            if (Pokemon == null)
             {
                 return RedirectToPage("./NotFound");
             }
+
             return Page();
         }
     }

@@ -1,0 +1,10 @@
+﻿@page "{pokemonId:int}"
+@model OdeToPokemon.Pages.Pokemons.EditModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Editing @Model.Pokemon.Name</h2>
+
+
+<a asp-page="./List" class="btn btn-default"> All Pokemons</a>
