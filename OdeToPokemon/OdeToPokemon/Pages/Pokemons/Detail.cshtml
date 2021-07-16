@@ -7,17 +7,43 @@
 
 <h2>@Model.Pokemon.Name</h2>
 
-<div>
-    PokedexID = @Model.Pokemon.Id
-</div>
-<div>
-    Type = @Model.Pokemon.Type
-</div>
-<div>
-    Previous Evolution =  @Model.PreviousEvolution
-</div>
-<div>
-    Next Evolution = @Model.NextEvolution
-</div>
+<table class=" table">
+
+    <tr>
+        <td> PokedexID </td>
+        <td>  @Model.Pokemon.Id </td>
+    </tr>
+    <tr>
+        <td> Type </td>
+        <td> @Model.Pokemon.Type </td>
+    </tr>
+    <tr>
+        <td>  Previous Evolution </td>
+        <td>
+            @if (Model.Pokemon.PreviousEvolution != null)
+            {
+                <a class="btn"
+                   asp-page="./Detail"
+                   asp-route-PokemonId="@Model.Pokemon.PreviousEvolution.Id">
+                    @Model.Pokemon.PreviousEvolution.Name
+                </a>
+            }
+        </td>
+</tr>
+    <tr>
+        <td>  Next Evolution </td>
+        <td>
+            @if (Model.Pokemon.NextEvolution != null)
+            {
+                <a class="btn"
+                   asp-page="./Detail"
+                   asp-route-PokemonId="@Model.Pokemon.NextEvolution.Id">
+                    @Model.Pokemon.NextEvolution.Name
+                </a>
+            }
+        </td>
+    </tr>
+
+</table>
 
 <a asp-page="./List" class="btn btn-default"> All Pokemons</a>
