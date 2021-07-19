@@ -22,9 +22,6 @@ namespace OdeToPokemon.Pages.Pokemons
         [BindProperty(SupportsGet = true)]
         public string PokemonNextId { get; set; }
         
-        [TempData]
-        public string ErrorMessage { get; set; }
-
         public IEnumerable<SelectListItem> PokemonsListPrevious { get; set; }
         public IEnumerable<SelectListItem> PokemonsListNext { get; set; }
         public IEnumerable<SelectListItem> PokemonTypes { get; set; }
@@ -85,6 +82,7 @@ namespace OdeToPokemon.Pages.Pokemons
             if (!newPokemon)
             {
                 
+
                 if (pokemonData.IsPokemonIdValid(Pokemon.Id) || Pokemon.Id == (int)TempData["previousId"])
                 {
                     TempData["Message"] = "Pokemon Updated ! ";
@@ -93,6 +91,7 @@ namespace OdeToPokemon.Pages.Pokemons
                     return RedirectToPage("./Detail", new { pokemonId = Pokemon.Id });
                 } else
                 {
+                    TempData.Keep("previousId");
                     TempData["ErrorMessage"] = "Error : Pokemon Id Already Taken ! ";
                     EditPageSetup();
                     return Page();
@@ -106,8 +105,9 @@ namespace OdeToPokemon.Pages.Pokemons
                 TempData["Message"] = "Pokemon Added ! ";
                 return RedirectToPage("./Detail", new { pokemonId = Pokemon.Id });
             } else
-            {
+            {   
                 TempData["ErrorMessage"] = "Error : Pokemon Id Already Taken ! ";
+                TempData.Keep("previousId");
                 EditPageSetup();
                 return Page();
             }

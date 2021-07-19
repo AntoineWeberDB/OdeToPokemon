@@ -13,9 +13,9 @@ else
     <h2>Creating new Pokemon</h2>
 }
 
-@if (Model.ErrorMessage != null)
+@if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-info"> @Model.ErrorMessage</div>
+    <div class="alert alert-danger"> @TempData["ErrorMessage"]</div>
 }
 
 <form method="post">
