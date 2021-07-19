@@ -21,6 +21,10 @@ namespace OdeToPokemon.Pages.Pokemons
         public string PokemonPreviousId { get; set; }
         [BindProperty(SupportsGet = true)]
         public string PokemonNextId { get; set; }
+        
+        [TempData]
+        public string ErrorMessage { get; set; }
+
         public IEnumerable<SelectListItem> PokemonsListPrevious { get; set; }
         public IEnumerable<SelectListItem> PokemonsListNext { get; set; }
         public IEnumerable<SelectListItem> PokemonTypes { get; set; }
@@ -31,23 +35,96 @@ namespace OdeToPokemon.Pages.Pokemons
             this.htmlHelper = htmlHelper;
         }
 
-        public IActionResult OnGet(int pokemonId)
+        public IActionResult OnGet(int? pokemonId)
         {
-            Pokemon = pokemonData.GetPokemonById(pokemonId);
-            PokemonPreviousId = Pokemon.PreviousEvolution.Id.ToString();
-            PokemonNextId = Pokemon.NextEvolution.Id.ToString();
+            TempData["newPokemon"] = false;
+            if (pokemonId.HasValue)
+            {
+                Pokemon = pokemonData.GetPokemonById(pokemonId.Value);
+                PokemonPreviousId = Pokemon.PreviousEvolution.Id.ToString();
+                PokemonNextId = Pokemon.NextEvolution.Id.ToString();
+            }
+
+            EditPageSetup();
+
+            if (!pokemonId.HasValue)
+            {
+                Pokemon = new Pokemon();
+                TempData["newPokemon"] = true;
+                return Page();
+            }
+
+            if (Pokemon == null)
+            {
+                return RedirectToPage("./NotFound");
+            }
+
+            TempData["previousId"] = pokemonId;
+            return Page();
+        }
+
+        public IActionResult OnPost()
+        {
             
+            Pokemon.PreviousEvolution = pokemonData.GetPokemonById(Int32.Parse(PokemonPreviousId));
+            Pokemon.NextEvolution = pokemonData.GetPokemonById(Int32.Parse(PokemonNextId));
 
+            Boolean newPokemon = false;
+            if (TempData["newPokemon"] != null)
+            {
+                newPokemon = (Boolean)TempData["newPokemon"];
+            }
+            TempData["newPokemon"] = newPokemon;
 
+            if (!ModelState.IsValid)
+            {
+                EditPageSetup();
+                return Page();
+            }
+            
+            if (!newPokemon)
+            {
+                
+                if (pokemonData.IsPokemonIdValid(Pokemon.Id) || Pokemon.Id == (int)TempData["previousId"])
+                {
+                    TempData["Message"] = "Pokemon Updated ! ";
+                    pokemonData.Update(Pokemon, (int)TempData["previousId"]);
+                    pokemonData.Commit();
+                    return RedirectToPage("./Detail", new { pokemonId = Pokemon.Id });
+                } else
+                {
+                    TempData["ErrorMessage"] = "Error : Pokemon Id Already Taken ! ";
+                    EditPageSetup();
+                    return Page();
+                }
+            }
+                        
+            Boolean added = pokemonData.Add(Pokemon);
+            pokemonData.Commit();
+            if (added)
+            {
+                TempData["Message"] = "Pokemon Added ! ";
+                return RedirectToPage("./Detail", new { pokemonId = Pokemon.Id });
+            } else
+            {
+                TempData["ErrorMessage"] = "Error : Pokemon Id Already Taken ! ";
+                EditPageSetup();
+                return Page();
+            }
+        }
+
+        public void EditPageSetup()
+        {
             PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>();
             IEnumerable<Pokemon> AllPokemonsList = pokemonData.GetPokemonsByName("");
 
             PokemonsListPrevious = AllPokemonsList.Select(a =>
                                  new SelectListItem
-                                 {   Value = a.Id.ToString(),
+                                 {
+                                     Value = a.Id.ToString(),
                                      Text = a.Id + " - " + a.Name
                                  }).ToList();
-            
+
 
             PokemonsListNext = AllPokemonsList.Select(a =>
                                new SelectListItem
@@ -56,56 +133,6 @@ namespace OdeToPokemon.Pages.Pokemons
                                    Text = a.Id + " - " + a.Name
                                }).ToList();
 
-
-            if (Pokemon == null)
-            {
-                return RedirectToPage("./NotFound");
-            }
-
-            return Page();
-        }
-
-        public IActionResult OnPost()
-        {
-            
-
-
-
-            Pokemon.PreviousEvolution = pokemonData.GetPokemonById(Int32.Parse(PokemonPreviousId));
-            Pokemon.NextEvolution = pokemonData.GetPokemonById(Int32.Parse(PokemonNextId));
-
-            if (ModelState.IsValid) { 
-
-                pokemonData.Update(Pokemon);
-                pokemonData.Commit();
-
-                return RedirectToPage("./List");
-
-            } else
-            {
-                PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>();
-                IEnumerable<Pokemon> AllPokemonsList = pokemonData.GetPokemonsByName("");
-
-                PokemonsListPrevious = AllPokemonsList.Select(a =>
-                                     new SelectListItem
-                                     {
-                                         Value = a.Id.ToString(),
-                                         Text = a.Id + " - " + a.Name
-                                     }).ToList();
-
-                PokemonsListNext = AllPokemonsList.Select(a =>
-                                   new SelectListItem
-                                   {
-                                       Value = a.Id.ToString(),
-                                       Text = a.Id + " - " + a.Name
-                                   }).ToList();
-                return Page();
-            }
-
-
-
-
-           
         }
     }
 }

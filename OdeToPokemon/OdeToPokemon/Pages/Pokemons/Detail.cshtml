@@ -7,6 +7,11 @@
 
 <h2>@Model.Pokemon.Name</h2>
 
+@if(Model.Message != null)
+{
+    <div class="alert alert-info"> @Model.Message</div>
+}
+
 <table class=" table">
 
     <tr>
@@ -20,20 +25,20 @@
     <tr>
         <td>  Previous Evolution </td>
         <td>
-            @if (Model.Pokemon.PreviousEvolution != null)
+            @if (Model.Pokemon.PreviousEvolution.Id > 0)
             {
                 <a class="btn"
                    asp-page="./Detail"
                    asp-route-PokemonId="@Model.Pokemon.PreviousEvolution.Id">
                     @Model.Pokemon.PreviousEvolution.Name
                 </a>
-            }
+            } 
         </td>
 </tr>
     <tr>
         <td>  Next Evolution </td>
         <td>
-            @if (Model.Pokemon.NextEvolution != null)
+            @if (Model.Pokemon.NextEvolution.Id > 0)
             {
                 <a class="btn"
                    asp-page="./Detail"
@@ -45,5 +50,7 @@
     </tr>
 
 </table>
+
+<a asp-page="./Edit" class="btn btn-default"  asp-route-PokemonId="@Model.Pokemon.Id"> Edit Pokemon</a>
 
 <a asp-page="./List" class="btn btn-default"> All Pokemons</a>

@@ -11,7 +11,9 @@ namespace OdeToPokemon.Data
         IEnumerable<Pokemon> GetPokemonsByName(string name);
         Pokemon GetPokemonById(int id);
         void SetPokemonParents(Pokemon pokemon);
-        Pokemon Update(Pokemon updatedPokemon);
+        Pokemon Update(Pokemon updatedPokemon,int previousId);
+        Boolean Add(Pokemon newPokemon);
+        Boolean IsPokemonIdValid(int id);
         int Commit();
     }
 
@@ -21,7 +23,7 @@ namespace OdeToPokemon.Data
 
         public InMemoryPokemonData()
         {
-            pokemons = new List<Pokemon>() { 
+            pokemons = new List<Pokemon>() {
                 new Pokemon { Id = 0, Name = "-", Type = PokemonType.Normal},
                 new Pokemon { Id = 1, Name = "Bulbizarre", Type = PokemonType.Grass},
                 new Pokemon { Id = 2, Name = "Herbizarre", Type = PokemonType.Grass},
@@ -32,10 +34,10 @@ namespace OdeToPokemon.Data
                 new Pokemon { Id = 7, Name = "Carapuce", Type = PokemonType.Water },
                 new Pokemon { Id = 8, Name = "Carabaffe", Type = PokemonType.Water },
                 new Pokemon { Id = 9, Name = "Tortank", Type = PokemonType.Water },
-                new Pokemon { Id = 10, Name = "Pikachu", Type = PokemonType.Electric }
+                new Pokemon { Id = 25, Name = "Pikachu", Type = PokemonType.Electric }
             };
 
-            
+
             for (int i = 1; i < pokemons.Count; i++)
             {
                 pokemons[i].PreviousEvolution = pokemons[0];
@@ -58,13 +60,16 @@ namespace OdeToPokemon.Data
         }
 
         public void SetPokemonParents(Pokemon pokemon)
-        {   
-            if(pokemon.PreviousEvolution.Id != 0) { 
+        {
+            if (pokemon.PreviousEvolution.Id != 0)
+            {
+                GetPokemonById(pokemon.Id).NextEvolution.PreviousEvolution = pokemons[0];
                 Pokemon previous = GetPokemonById(pokemon.PreviousEvolution.Id);
                 previous.NextEvolution = GetPokemonById(pokemon.Id);
             }
             if (pokemon.NextEvolution.Id != 0)
             {
+                GetPokemonById(pokemon.Id).PreviousEvolution.NextEvolution = pokemons[0];
                 Pokemon next = GetPokemonById(pokemon.NextEvolution.Id);
                 next.PreviousEvolution = GetPokemonById(pokemon.Id);
             }
@@ -76,25 +81,55 @@ namespace OdeToPokemon.Data
                    where string.IsNullOrEmpty(name) || p.Name.StartsWith(name)
                    orderby p.Id
                    select p;
-                   
+
         }
         public Pokemon GetPokemonById(int id)
         {
-            return pokemons.SingleOrDefault(p => p.Id == id);  
+            return pokemons.SingleOrDefault(p => p.Id == id);
         }
 
-        public Pokemon Update(Pokemon updatedPokemon)
-        {
-            var pokemon = pokemons.SingleOrDefault(p => p.Id == updatedPokemon.Id);
-            if(pokemon != null)
+        public Boolean IsPokemonIdValid(int id)
+        {   
+            if(id>0 && id < 152)
             {
-                if (pokemon.Id > 0)
+                Pokemon temp = GetPokemonById(id);
+                if (temp == null)
                 {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        public Boolean Add(Pokemon newPokemon)
+        {
+            if (IsPokemonIdValid(newPokemon.Id))
+            {
+                pokemons.Add(newPokemon);
+                SetPokemonParents(newPokemon);
+                return true;
+            }
+            return false;
+        }
+
+
+        public Pokemon Update(Pokemon updatedPokemon,int previousId)
+        {
+            var pokemon = pokemons.SingleOrDefault(p => p.Id == previousId);
+            if (pokemon != null)
+            {
+                if ((IsPokemonIdValid(updatedPokemon.Id)) || (updatedPokemon.Id == previousId))
+                {
+                    pokemon.Id = updatedPokemon.Id;
                     pokemon.Name = updatedPokemon.Name;
                     pokemon.Type = updatedPokemon.Type;
+                    SetPokemonParents(pokemon);
                     pokemon.PreviousEvolution = updatedPokemon.PreviousEvolution;
                     pokemon.NextEvolution = updatedPokemon.NextEvolution;
                     SetPokemonParents(pokemon);
+
                 }
             }
             return pokemon;
@@ -105,5 +140,6 @@ namespace OdeToPokemon.Data
         {
             return 0;
         }
-    }
+
+    } 
 }

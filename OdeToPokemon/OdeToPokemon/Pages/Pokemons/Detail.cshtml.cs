@@ -14,6 +14,9 @@ namespace OdeToPokemon.Pages.Pokemons
         public Pokemon Pokemon { get; set; }
         private readonly IPokemonData pokemonData;
 
+        [TempData]
+        public string Message { get; set; }
+
         public DetailModel(IPokemonData pokemonData)
         {
             this.pokemonData = pokemonData;

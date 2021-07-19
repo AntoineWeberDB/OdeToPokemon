@@ -1,16 +1,29 @@
-﻿@page "{pokemonId:int}"
+﻿@page "{pokemonId:int?}"
 @model OdeToPokemon.Pages.Pokemons.EditModel
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h2>Editing @Model.Pokemon.Name</h2>
+@if (Model.Pokemon.Id > 0)
+{
+    <h2>Editing @Model.Pokemon.Name</h2>
+}
+else
+{
+    <h2>Creating new Pokemon</h2>
+}
+
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-info"> @Model.ErrorMessage</div>
+}
 
 <form method="post">
 
     <div class="form-group">
-        <label asp-for="Pokemon.Id" class="control">Id :  @Model.Pokemon.Id</label>
-        <input asp-for="Pokemon.Id" type="hidden" />
+        <label asp-for="Pokemon.Id"></label>
+        <input asp-for="Pokemon.Id" class="form-control" />
+        <span class="text-danger" asp-validation-for="Pokemon.Id"></span>
     </div>
     <div class="form-group">
         <label asp-for="Pokemon.Name"></label>
@@ -23,11 +36,11 @@
 
     </div>
     <div class="form-group">
-            <label >Previous Evolution</label>
-            <select class="form-control" asp-for="PokemonPreviousId" asp-items="Model.PokemonsListPrevious"></select>
+        <label>Previous Evolution</label>
+        <select class="form-control" asp-for="PokemonPreviousId" asp-items="Model.PokemonsListPrevious"></select>
     </div>
     <div class="form-group">
-        <label > Next Evolution</label>
+        <label> Next Evolution</label>
         <select class="form-control" asp-for="PokemonNextId" asp-items="Model.PokemonsListNext"></select>
     </div>
 
