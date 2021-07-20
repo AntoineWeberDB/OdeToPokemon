@@ -22,9 +22,9 @@ namespace OdeToPokemon.Pages.Pokemons
         [BindProperty(SupportsGet = true)]
         public string PokemonNextId { get; set; }
         
-        public IEnumerable<SelectListItem> PokemonsListPrevious { get; set; }
-        public IEnumerable<SelectListItem> PokemonsListNext { get; set; }
-        public IEnumerable<SelectListItem> PokemonTypes { get; set; }
+        public IList<SelectListItem> PokemonsListPrevious { get; set; }
+        public IList<SelectListItem> PokemonsListNext { get; set; }
+        public IList<SelectListItem> PokemonTypes { get; set; }
 
         public EditModel(IPokemonData pokemonData, IHtmlHelper htmlHelper)
         {
@@ -38,8 +38,22 @@ namespace OdeToPokemon.Pages.Pokemons
             if (pokemonId.HasValue)
             {
                 Pokemon = pokemonData.GetPokemonById(pokemonId.Value);
-                PokemonPreviousId = Pokemon.PreviousEvolution.Id.ToString();
-                PokemonNextId = Pokemon.NextEvolution.Id.ToString();
+                if(Pokemon.PreviousEvolution != null)
+                {
+                    PokemonPreviousId = Pokemon.PreviousEvolution.Id.ToString();
+                } else
+                {
+                    PokemonPreviousId = "0";
+                }
+                if (Pokemon.NextEvolution != null)
+                {
+                    PokemonNextId = Pokemon.NextEvolution.Id.ToString();
+                }
+                else
+                {
+                    PokemonNextId = "0";
+                }
+
             }
 
             EditPageSetup();
@@ -82,7 +96,6 @@ namespace OdeToPokemon.Pages.Pokemons
             if (!newPokemon)
             {
                 
-
                 if (pokemonData.IsPokemonIdValid(Pokemon.Id) || Pokemon.Id == (int)TempData["previousId"])
                 {
                     TempData["Message"] = "Pokemon Updated ! ";
@@ -115,7 +128,7 @@ namespace OdeToPokemon.Pages.Pokemons
 
         public void EditPageSetup()
         {
-            PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>();
+            PokemonTypes = htmlHelper.GetEnumSelectList<PokemonType>().ToList();
             IEnumerable<Pokemon> AllPokemonsList = pokemonData.GetPokemonsByName("");
 
             PokemonsListPrevious = AllPokemonsList.Select(a =>
@@ -125,6 +138,13 @@ namespace OdeToPokemon.Pages.Pokemons
                                      Text = a.Id + " - " + a.Name
                                  }).ToList();
 
+            PokemonsListPrevious.Insert(0, (new SelectListItem
+            {
+                Text = "-",
+                Value = "0"
+            }));
+
+
 
             PokemonsListNext = AllPokemonsList.Select(a =>
                                new SelectListItem
@@ -132,6 +152,12 @@ namespace OdeToPokemon.Pages.Pokemons
                                    Value = a.Id.ToString(),
                                    Text = a.Id + " - " + a.Name
                                }).ToList();
+
+            PokemonsListNext.Insert(0, (new SelectListItem
+            {
+                Text = "-",
+                Value = "0"
+            }));
 
         }
     }

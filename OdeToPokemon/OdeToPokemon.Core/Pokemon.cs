@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace OdeToPokemon.Core
@@ -8,8 +9,9 @@ namespace OdeToPokemon.Core
     public class Pokemon
     {
         [Required]
-        [Range(1,151,ErrorMessage ="Please enter a valid Pokedex ID (1-151)")]
+        [Range(0,151,ErrorMessage ="Please enter a valid Pokedex ID (1-151)")]
         public int Id { get; set; }
+        [Key]
         [Required]
         [StringLength(80)]
         public string Name { get; set; }

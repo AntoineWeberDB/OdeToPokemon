@@ -6,6 +6,17 @@
 
 <h1>Pokemons</h1>
 
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info"> @TempData["Message"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger"> @TempData["ErrorMessage"]</div>
+}
+
+
 <form method="get">
     <div class="form-group">
         <div class="input-group">
@@ -19,43 +30,13 @@
     </div>
 </form>
 
+@foreach(var pokemon in Model.Pokemons)
+{
+    <partial name="_Summary" model="pokemon"/>
+}
+<a class="btn btn-primary" asp-page="./Edit">  Add New </a>
 
-<table class="table">
-    @foreach (var pokemon in Model.Pokemons)
-    {   @if (pokemon.Id > 0)
-    {
-        <tr>
-            <td>@pokemon.Id</td>
-            <td>@pokemon.Name</td>
-            <td>@pokemon.Type</td>
-            <td>
-                <a class="btn btn-lg"
-                   asp-page="./Detail"
-                   asp-route-PokemonId="@pokemon.Id">
-                    <i class="glyphicon glyphicon-zoom-in"></i>
-                </a>
-            </td>
-            <td>
-                <a class="btn btn-lg"
-                   asp-page="./Edit"
-                   asp-route-PokemonId="@pokemon.Id">
-                    <i class="glyphicon glyphicon-edit"></i>
-                </a>
-            </td>
+@section footer {
+    <div> @Model.Message </div>
+}
 
-
-        </tr>
-        }
-    }
-
-</table>
-
-<a class="btn btn-primary"  asp-page="./Edit">  Add New </a>
-
-
-
-
-
-
-
-<div> @Model.Message </div>

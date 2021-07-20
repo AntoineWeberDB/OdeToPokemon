@@ -25,7 +25,7 @@
     <tr>
         <td>  Previous Evolution </td>
         <td>
-            @if (Model.Pokemon.PreviousEvolution.Id > 0)
+            @if (Model.Pokemon.PreviousEvolution != null)
             {
                 <a class="btn"
                    asp-page="./Detail"
@@ -38,7 +38,7 @@
     <tr>
         <td>  Next Evolution </td>
         <td>
-            @if (Model.Pokemon.NextEvolution.Id > 0)
+            @if (Model.Pokemon.NextEvolution != null)
             {
                 <a class="btn"
                    asp-page="./Detail"
