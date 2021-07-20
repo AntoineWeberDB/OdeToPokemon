@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ namespace OdeToPokemon.Core
     public class Pokemon
     {
         [Required]
-        [Range(0,151,ErrorMessage ="Please enter a valid Pokedex ID (1-151)")]
+        [Range(1,151,ErrorMessage ="Please enter a valid Pokedex ID (1-151)")]
         public int Id { get; set; }
         [Key]
         [Required]
@@ -17,8 +18,10 @@ namespace OdeToPokemon.Core
         public string Name { get; set; }
         public PokemonType Type { get; set; }
         [Display(Name = "Previous Evolution")]
+        [JsonIgnore]
         public Pokemon PreviousEvolution { get; set; } = null;
         [Display(Name = "Next Evolution")]
+        //[JsonIgnore]
         public Pokemon NextEvolution { get; set; } = null;
 
         public Pokemon()

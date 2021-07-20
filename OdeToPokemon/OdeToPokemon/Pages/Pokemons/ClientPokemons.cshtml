@@ -1,0 +1,18 @@
+﻿@page
+@model OdeToPokemon.Pages.Pokemons.ClientPokemonsModel
+@{
+    ViewData["Title"] = "ClientPokemons";
+}
+
+<h2>Client Pokemons</h2>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $.ajax("/api/pokemons/", { method: "get" }).then(function (response) {
+                console.dir(response);
+            });
+        });
+    </script>
+}
+

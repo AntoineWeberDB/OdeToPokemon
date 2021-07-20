@@ -1,10 +1,13 @@
 ﻿@page
 @model OdeToPokemon.Pages.Pokemons.ListModel
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "Pokedex";
 }
 
-<h1>Pokemons</h1>
+
+<img src="~/images/pokedex.png" style="width: 10vw;height:auto;" />
+
+<h1>Pokedex</h1>
 
 
 @if (TempData["Message"] != null)
@@ -30,10 +33,50 @@
     </div>
 </form>
 
-@foreach(var pokemon in Model.Pokemons)
-{
-    <partial name="_Summary" model="pokemon"/>
+
+
+<table class="table">
+    @foreach (var pokemon in Model.Pokemons)
+    {@if (pokemon.Id > 0)
+        {
+            <tr>
+                <td>@pokemon.Id</td>
+                <td>@pokemon.Name</td>
+                <td>@pokemon.Type</td>
+                <td>
+                    <a class="btn btn-lg"
+                       asp-page="./Detail"
+                       asp-route-PokemonId="@pokemon.Id">
+                        <i class="glyphicon glyphicon-zoom-in"></i>
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-lg"
+                       asp-page="./Edit"
+                       asp-route-PokemonId="@pokemon.Id">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-lg"
+                       asp-page="./Delete"
+                       asp-route-PokemonId="@pokemon.Id">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+
+
+            </tr>
+        }
 }
+
+</table>
+
+@*@foreach (var pokemon in Model.Pokemons)
+    {
+        <partial name="_Summary" model=pokemon />
+    }*@
+
 <a class="btn btn-primary" asp-page="./Edit">  Add New </a>
 
 @section footer {

@@ -181,5 +181,10 @@ namespace OdeToPokemon.Data
             //entity.State = EntityState.Modified;
             //return updatedPokemon;
         }
+
+        public int GetCountOfPokemons()
+        {
+            return db.Pokemons.Count();
+        }
     }
 }

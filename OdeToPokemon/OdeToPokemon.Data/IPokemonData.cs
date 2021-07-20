@@ -15,6 +15,7 @@ namespace OdeToPokemon.Data
         Boolean Add(Pokemon newPokemon);
         Pokemon Delete(int id);
         Boolean IsPokemonIdValid(int id);
+        int GetCountOfPokemons();
         int Commit();
     }
 

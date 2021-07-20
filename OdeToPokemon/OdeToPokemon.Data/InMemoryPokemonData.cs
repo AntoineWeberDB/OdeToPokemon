@@ -140,6 +140,10 @@ namespace OdeToPokemon.Data
 
             return pokemon;
         }
-            
+
+        public int GetCountOfPokemons()
+        {
+            return pokemons.Count();
+        }
     }
 }
