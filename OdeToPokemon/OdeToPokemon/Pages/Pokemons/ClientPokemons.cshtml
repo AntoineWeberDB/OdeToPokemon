@@ -25,10 +25,29 @@
         <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.25/datatables.min.js"></script>
     </environment>
     
-
     <script>
+
+        var pokemonTypes =["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost","Dark","Dragon","Steel","Fairy"]
+
         $(function () {
+
+           
+
             $.ajax("/api/pokemons/", { method: "get" }).then(function (response) {
+                $("#pokemons").dataTable({
+                    data: response,
+                    columns: [
+                        { "data": "id" },
+                        { "data": "name" },
+                        {
+                            "data": "type", "render": function (data) {
+                                return pokemonTypes[data];
+                            }
+                        }
+                    ]
+
+                });
+                
                 console.dir(response);
             });
         });
