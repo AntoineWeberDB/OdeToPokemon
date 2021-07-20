@@ -1,16 +1,23 @@
 ﻿@page
 @model OdeToPokemon.Pages.Pokemons.ClientPokemonsModel
 @{
-    ViewData["Title"] = "ClientPokemons";
+    ViewData["Title"] = "Client Pokemons";
 }
 
 <h2>Client Pokemons</h2>
 
 @section Scripts {
 
+    <table class="table" id="pokemons">
+
+
+    </table>
 
     <environment include="Development">
-        <script src="~\node_modules\datatables.net\js\jquery.dataTables.js"/>
+
+        <script src="~/node_modules/datatables.net/js/jquery.dataTables.js"></script>
+        <link href="~/node_modules/datatables.net-bs/css/dataTables.bootstrap.css" rel="stylesheet" />
+        <script src="~/node_modules/datatables.net-bs/js/dataTables.bootstrap.js"></script>
     </environment>  
     
     <environment exclude="Development">
