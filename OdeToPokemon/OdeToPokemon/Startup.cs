@@ -31,7 +31,7 @@ namespace OdeToPokemon
                 options.UseSqlServer(Configuration.GetConnectionString("OdeToPokemonDb"));
             });
 
-            services.AddScoped<IPokemonData,SqlPokemonData> ();
+            services.AddScoped<IPokemonData, SqlPokemonData>();
             //services.AddSingleton<IPokemonData,InMemoryPokemonData> ();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -54,9 +54,13 @@ namespace OdeToPokemon
             }
             else
             {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
+                app.UseExceptionHandler("/Error"); //Useful to give user friendly error messages
+                app.UseHsts(); // This and the UseHttpsRedirection are responsible for the https secure connexion 
             }
+
+
+
+            app.Use(SayHelloMiddleware);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -64,6 +68,21 @@ namespace OdeToPokemon
             app.UseCookiePolicy();
 
             app.UseMvc();
+        }
+
+        private RequestDelegate SayHelloMiddleware(RequestDelegate next)
+        {
+            return async ctx =>
+            {
+                if (ctx.Request.Path.StartsWithSegments("/hello"))
+                {
+                    await ctx.Response.WriteAsync("Hello,World!");
+                }
+                else
+                {
+                    await next(ctx);
+                }
+            };
         }
     }
 }
